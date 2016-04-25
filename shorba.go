@@ -2,9 +2,11 @@ package shorba
 
 import (
     "gopkg.in/mgo.v2"
+    "gopkg.in/mgo.v2/bson"
     "fmt"
     "reflect"
     "strings"
+    "time.Time"
 )
 
 var db *mgo.Database
@@ -40,13 +42,34 @@ func getMap(model interface{}) (map[string]interface{}, error) {
     return values, nil
 }
 
+// generateValue generates a random value for the given type
+func generateValue(inputType string) interface{} {
+    switch inputType {
+        case "string": 
+            return "this is a random string"
+        case "int":
+            return 1
+        case "bson.ObjectId":
+            return bson.ObjectId()
+        case "time.Time":
+            return time.Now()
+    }
+}
+
 // Populate generates a dummy data for a certain collection
 // based on the struct defention, it creates (n) of documents
 func Populate(collection string, model interface{}, n int) error {
     // convert interface to a map
-    _, err := getMap(model)
+    modelMap, err := getMap(model)
     if err != nil {
         return err
+    }
+    // loop on n and generate random values for each field
+    for x = 0; x < n; x++ {
+        item := modelMap{}
+        for key, val range item {
+            
+        }
     }
     return nil
 }
