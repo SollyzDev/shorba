@@ -2,20 +2,23 @@ package shorba
 
 import (
     "gopkg.in/mgo.v2"
-    "gopkg.in/mgo.v2/bson"
+    //"gopkg.in/mgo.v2/bson"
     "fmt"
     "reflect"
     "strings"
-    "time.Time"
+    "time"
 )
 
 var db *mgo.Database
 
+// Connect connects to mongodb and initials db instance
 func Connect(host string, username string, passwor string, dbName string) {
     session, err := mgo.Dial(host)
     if err != nil {
         panic(err)
     }
+    defer session.Close()
+    
     session.SetMode(mgo.Monotonic, true)
     db = session.DB(dbName)
 }
@@ -36,24 +39,10 @@ func getMap(model interface{}) (map[string]interface{}, error) {
         field := modelReflectType.Field(i)
         if tag := field.Tag.Get("bson"); tag != "" {
             t := strings.Split(tag, ",")
-            values[t[0]] = modelReflect.Field(i).Type()
+            values[t[0]] = []byte(modelReflect.Field(i).Type())
         }
     }
     return values, nil
-}
-
-// generateValue generates a random value for the given type
-func generateValue(inputType string) interface{} {
-    switch inputType {
-        case "string": 
-            return "this is a random string"
-        case "int":
-            return 1
-        case "bson.ObjectId":
-            return bson.ObjectId()
-        case "time.Time":
-            return time.Now()
-    }
 }
 
 // Populate generates a dummy data for a certain collection
@@ -65,11 +54,23 @@ func Populate(collection string, model interface{}, n int) error {
         return err
     }
     // loop on n and generate random values for each field
-    for x = 0; x < n; x++ {
-        item := modelMap{}
-        for key, val range item {
-            
-        }
+    for x := 0; x < n; x++ {
+        item := make(map[string]interface{})
+        for key, val := range modelMap {
+            switch val {
+                case "string": 
+                    item[key] = GenerateString()
+                case "int":
+                    item[key] = GenerateInt()
+                case "bool":
+                    item[key] = GenerateBool()
+                //case "bson.ObjectId":
+                //    return bson.ObjectId(nil)
+                case "time.Time":
+                    item[key] = GenerateTime()
+            }
+            fmt.Printf("%s: %v => %v\n", key, val, item[key])
+        }      
     }
     return nil
 }
