@@ -15,6 +15,7 @@ let's suppose you have a struct like that:
 and you want to populate 200 fake posts for testing and develpoment purposes,
 you can use shorba to do that for you, like this:
 
+	postModel := &Post{}
 	shorba.populate("posts", &postModel, 200)
 
 
