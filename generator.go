@@ -2,14 +2,21 @@ package shorba
 
 import (
     "time"
+    "math/rand"
 )
 
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 func GenerateString() string {
-    return "This is string"
+    b := make([]byte, 100)
+    for i := range b {
+        b[i] = letterBytes[rand.Int63() % int64(len(letterBytes))]
+    }
+    return string(b)
 }
 
 func GenerateInt() int {
-    return 12
+    return rand.Intn(100)
 }
 
 func GenerateBool() bool {
