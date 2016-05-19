@@ -26,7 +26,7 @@ this should generate 200 different posts and insert them into collection 'posts'
 first install shorba
 
 	go get github.com/eslammostafa/shorba
-	
+
 import it
 
 	import (
@@ -37,9 +37,9 @@ import it
 connect to your mongodb
 
 	shorba.Connect("localhost", "username", "password", "dbname")
-	
+
  if there is no username nor password write "" instead of each one
-  
+
  	shorba.Connect("localhost", "", "", "dbname")
 
 
@@ -47,6 +47,9 @@ populate data
 
 	postModel := &Post{}
 	shorba.populate("posts", &postModel, 135)
-	
-	
+
+
 #### TODO
+
+* Support arrays
+* Support Embedded Documents
